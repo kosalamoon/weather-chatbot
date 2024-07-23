@@ -1,17 +1,37 @@
-service: serverless-api
+service: weather-chatbot-serverless-api
 frameworkVersion: '3'
 
+plugins:
+    - serverless-plugin-typescript
+    - serverless-dotenv-plugin
+    - serverless-offline
+
 provider:
-  name: aws
-  runtime: nodejs20.x
+    name: aws
+    runtime: nodejs20.x
+    region: ap-southeast-1
+    stage: ${opt:stage, "dev"}
+    httpApi:
+        cors: true
 
 functions:
-  login:
-    handler: functions/login
-    events:
-      - httpApi:
-          path: /login
-          method: POST
+    login:
+        handler: functions/login/index.handler
+        events:
+            - httpApi:
+                  path: /login
+                  method: POST
 
-plugins:
-  - serverless-plugin-typescript
+    register:
+        handler: functions/register/index.handler
+        events:
+            - httpApi:
+                  path: /register
+                  method: POST
+
+    weather-details:
+        handler: functions/weather/index.handler
+        events:
+            - httpApi:
+                  path: /weather-details
+                  method: GET
